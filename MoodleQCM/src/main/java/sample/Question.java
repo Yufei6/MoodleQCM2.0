@@ -24,7 +24,7 @@ public class Question {
     private int id;
 
     private boolean single;
-    private int shuffleanswers;
+    private boolean shuffleanswers;
     private int hidden;
     private String name, questiontext, generalfeedback, correctfeedback, partiallycorrectfeedback, incorrectfeedback;
     private String qt_format, gf_format, cf_format, pcf_format, if_format;
@@ -67,51 +67,52 @@ public class Question {
         return str;
     }
 
-    public Element getQuestionXml() {
-
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    public Element getQuestionXml(Document document) {
 
         Element root = null;
 
-        try {
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document= builder.newDocument();
-
             /////////////////////
             root = document.createElement("question");
+            root.setAttribute("type", "multichoice");
+
+             Element x_name = document.createElement("name");
+             root.appendChild(x_name);
+             Element x_name_text = document.createElement("text");
+             x_name.appendChild(x_name_text);
+             x_name_text.appendChild(document.createTextNode(name));
 
             Element x_questiontext = document.createElement("questiontext");
             x_questiontext.setAttribute("format", qt_format);
             Element questiontext_content = document.createElement("text");
-            questiontext_content.appendChild(document.createTextNode(questiontext));
+            questiontext_content.appendChild(document.createCDATASection(questiontext));
             x_questiontext.appendChild(questiontext_content);
             root.appendChild(x_questiontext);   //Write QuestionText
 
             Element x_generalfeeback = document.createElement("generalfeedback");
             x_generalfeeback.setAttribute("format", gf_format);
             Element generalfeedback_content = document.createElement("text");
-            generalfeedback_content.appendChild(document.createTextNode(generalfeedback));
+            generalfeedback_content.appendChild(document.createCDATASection(generalfeedback));
             x_generalfeeback.appendChild(generalfeedback_content);
             root.appendChild(x_generalfeeback);  //Write GeneralFeedback
 
             Element x_correctfeeback = document.createElement("correctfeedback");
             x_correctfeeback.setAttribute("format", cf_format);
             Element correctfeedback_content = document.createElement("text");
-            correctfeedback_content.appendChild(document.createTextNode(correctfeedback));
+            correctfeedback_content.appendChild(document.createCDATASection(correctfeedback));
             x_correctfeeback.appendChild(correctfeedback_content);
             root.appendChild(x_correctfeeback);  //Write CorrectFeedback
 
             Element x_partiallycorrectfeeback = document.createElement("partiallycorrectfeedback");
             x_partiallycorrectfeeback.setAttribute("format", pcf_format);
             Element partiallycorrectfeedback_content = document.createElement("text");
-            partiallycorrectfeedback_content.appendChild(document.createTextNode(partiallycorrectfeedback));
+            partiallycorrectfeedback_content.appendChild(document.createCDATASection(partiallycorrectfeedback));
             x_partiallycorrectfeeback.appendChild(partiallycorrectfeedback_content);
             root.appendChild(x_partiallycorrectfeeback);  //Write PartiallyCorrectFeedback
 
             Element x_incorrectfeeback = document.createElement("incorrectfeedback");
             x_incorrectfeeback.setAttribute("format", if_format);
             Element incorrectfeedback_content = document.createElement("text");
-            incorrectfeedback_content.appendChild(document.createTextNode(incorrectfeedback));
+            incorrectfeedback_content.appendChild(document.createCDATASection(incorrectfeedback));
             x_incorrectfeeback.appendChild(incorrectfeedback_content);
             root.appendChild(x_incorrectfeeback);  //Write InCorrectFeedback
 
@@ -136,27 +137,27 @@ public class Question {
             answernumbering_content.appendChild(document.createTextNode(answernumbering));
             root.appendChild(answernumbering_content);
 
+            Element shuffleanswers_content = document.createElement("shuffleanswers");
+            shuffleanswers_content.appendChild(document.createTextNode(Boolean.toString(shuffleanswers)));
+            root.appendChild(shuffleanswers_content);
+
             for (Answer ans : answers) {
                 Element answer = document.createElement("answer");
                 answer.setAttribute("fraction", Double.toString(ans.getFraction()));
                 answer.setAttribute("format", ans.getTextFormat());
                 Element text = document.createElement("text");
-                text.appendChild(document.createTextNode(ans.getText()));
+                text.appendChild(document.createCDATASection(ans.getText()));
                 answer.appendChild(text);
                 Element feedback = document.createElement("feedback");
                 feedback.setAttribute("format", ans.getFeedbackFormat());
                 Element f_text = document.createElement("text");
-                f_text.appendChild(document.createTextNode(ans.getFeedback()));
+                f_text.appendChild(document.createCDATASection(ans.getFeedback()));
                 feedback.appendChild(f_text);
                 answer.appendChild(feedback);
 
                 root.appendChild(answer);
             }
 
-        }
-        catch (final ParserConfigurationException e) {
-            e.printStackTrace();
-        }
 
         return root;
     }
@@ -170,6 +171,7 @@ public class Question {
             Document document = builder.newDocument();
 
             Element root = document.createElement("question_data");
+            document.appendChild(root);
             Element x_header = document.createElement("id_header");
             root.appendChild(x_header);
 
@@ -179,9 +181,11 @@ public class Question {
 
             Element x_name = document.createElement("name");
             x_header.appendChild(x_name);
-            x_name.appendChild(document.createTextNode(name));
+            Element x_name_text = document.createElement("text");
+            x_name.appendChild(x_name_text);
+            x_name_text.appendChild(document.createTextNode(name));
 
-            Element x_body = getQuestionXml();
+            Element x_body = getQuestionXml(document);
             root.appendChild(x_body);
 
             TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -279,6 +283,7 @@ public class Question {
             hidden = Integer.parseInt(x_question.getElementsByTagName("hidden").item(0).getTextContent());
             single = Boolean.parseBoolean(x_question.getElementsByTagName("single").item(0).getTextContent());
             answernumbering = x_question.getElementsByTagName("answernumbering").item(0).getTextContent();
+            shuffleanswers = Boolean.parseBoolean(x_question.getElementsByTagName("shuffleanswers").item(0).getTextContent());
 
             NodeList x_answers = x_question.getElementsByTagName("answer");
             int answers_nb = x_answers.getLength();

@@ -174,7 +174,7 @@ public abstract class QuestionStorage{
 
             for (Question q:list_question) {
                 final Element question = document.createElement("question");
-                question_list.appendChild(q.getQuestionXml());
+                question_list.appendChild(q.getQuestionXml(document));
 //                question.appendChild(document.createTextNode(q.getQuestionXml()));           //Question getter pour Exporter
             }
             Calendar c = Calendar.getInstance();
