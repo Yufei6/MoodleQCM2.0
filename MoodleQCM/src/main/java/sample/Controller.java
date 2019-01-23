@@ -1,10 +1,11 @@
 package sample;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeView;
+
+import java.net.URL;
+import java.util.ResourceBundle;
 
 public class Controller {
 
@@ -25,7 +26,6 @@ public class Controller {
     @FXML
     void initialize() {
         assert tree != null : "fx:id=\"tree\" was not injected: check your FXML file 'sample.fxml'.";
-
     }
 }
 

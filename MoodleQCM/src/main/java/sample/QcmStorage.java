@@ -1,20 +1,19 @@
 package sample;
 
-import java.io.File;
-import java.io.IOException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Comment;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Calendar;
-
 
 
 public class QcmStorage{
@@ -26,7 +25,7 @@ public class QcmStorage{
         name = "QcmStorage Defaut";
     }
 
-    public QcmStorage(String xml_path){
+    public QcmStorage(String xml_path,SuperBank super_bank_0){
         path = xml_path;
         list_qcm = new HashSet<Qcm>();
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -42,7 +41,8 @@ public class QcmStorage{
             for(int i = 0; i<nb_qcms_Elements; i++) {
                 final Element qcm = (Element) list_qcm_0.item(i);
                 final Element path_qcm = (Element) qcm.getElementsByTagName("qcm_path");
-                Qcm q = new Qcm(path_qcm.getTextContent());
+                final Element super_bank = (Element) qcm.getElementsByTagName("super_bank");
+                Qcm q = new Qcm(path_qcm.getTextContent(),super_bank_0);
                 list_qcm.add(q);
             }
         } catch (ParserConfigurationException e) {

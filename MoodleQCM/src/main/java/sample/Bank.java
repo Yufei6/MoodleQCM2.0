@@ -1,23 +1,5 @@
 package sample;
 
-import java.io.File;
-import java.io.IOException;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerFactory;
-import org.w3c.dom.Comment;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Calendar;
-
-
-
 
 public class Bank extends QuestionStorage{
     // private static int name_default_nomber = 0;
@@ -32,8 +14,8 @@ public class Bank extends QuestionStorage{
         // name_default_nomber++;
     }
 
-    public Bank(String path){
-        super(path);
+    public Bank(String path, SuperBank super_bank){
+        super(path, super_bank);
     }
 
     public void save(){
